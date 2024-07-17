@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Leaflet Web Map</title>
+	<meta name="viewport" content="width=device-width, 
+		initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" 
+		integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" 
+		crossorigin="" />
+	<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" 
+		integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" 
+		crossorigin="">
+	</script>
+
+	<style>
+		body {
+			padding: 0;
+			margin: 0;
+		}
+
+		html, body, #map {
+			height: 100%;
+			width: 100%;
+		}
+
+		.descrip {
+			 width:  250 px;
+			 font-size: 16px;
+			 font-family: "Open Sans", Helvetica, sans-serif;
+			 padding: 10px 14px;
+			 background-color: #FFFFFF;
+			 border-radius: 5px;
+			 border: 5px solid #D3D3D3;
+		}
+	</style>
+
+</head>
+
+<body>
+	<div id="map"></div>
+	<script>
+		var map = L.map("map", {center: [39.9526, -75.1652], zoom: 5});
+
+		var openStreet = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+			maxZoom: 19,
+			attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+		}).addTo(map);
+
+		var wmsLayer = L.tileLayer.wms('https://mesonet.agron.iastate.edu/cgi-bin/wms/nexrad/n0q.cgi?', {
+			layers: 'nexrad-n0q-900913',
+			format: 'image/png',
+			transparent: true
+		}).addTo(map);
+
+		var indePark = L.marker([39.95087, -75.150133], {alt: 'Independence National Historical Park'})
+		.bindPopup('<h1>Independence National Historical Park</h1><p>This park is located in <b>Philadelphia</b> and encompases both <b>Independence Hall</b> and <b>the Liberty Bell</b>.</p>')
+		.addTo(map);
+
+		var emory = L.marker([33.79940712946275, -84.32219428765634], {alt: 'Emory University'})
+		.bindPopup('<h1>Emory University</h1><p>This is the host location for <b>ILiADS 2024</b>.</p>')
+		.addTo(map);
+
+		var carleton = L.marker([44.461508761806165, -93.15602784689595], {alt: 'Carleton College'})
+		.bindPopup('<h1>Carleton College</h1><p>The current home of the <b>Tracing Medea</b> project and project team.</p>')
+		.addTo(map);
+
+		var line = L.polygon([[39.95087, -75.150133], [33.79940712946275, -84.32219428765634], [44.461508761806165, -93.15602784689595]]).addTo(map);
+
+		var descrip = L.control({position: 'bottomleft'});
+		descrip.onAdd = function() {
+			let div = L.DomUtil.create('div', 'descrip');
+			div.innerHTML =
+				'<h1>About this Map</h1><hr>' + 
+				'<p>This map displays parks near Philadelphia that</p>' +
+				'<p> are sustained by the National Park Service.</p>' +
+				'<h2>How to Use</h2>' +
+				'<p>Click on a marker to learn more about a park.</p>';
+			return div;
+		};
+		descrip.addTo(map);
+	</script>
+</body>
+</html>
